@@ -1,7 +1,7 @@
 import { open } from 'fs/promises'
 
 export default class CsvFile {
-  static async readFile (path) {
+  static async readFile(path) {
     if (typeof path !== 'string') throw new Error('path must be string')
     if (path === '') throw new Error('path must not be empty')
     let fileHandle
@@ -19,7 +19,7 @@ export default class CsvFile {
     }
   }
 
-  static async writeJson (data, path) {
+  static async writeJson(data, path) {
     if (!Array.isArray(data)) throw new Error('data must be array')
     if (!data.length) throw new Error('data must not be empty')
     if (typeof path !== 'string') throw new Error('path must be string')

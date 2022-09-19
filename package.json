@@ -7,17 +7,23 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "node tests/index.js",
+    "test": "jest ./tests",
     "install": "node install/index.js"
   },
   "author": "Leonid Karamashev <leonkaram@mail.ru>",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.19.1",
+    "@babel/preset-env": "^7.19.1",
+    "babel-jest": "^29.0.3",
     "eslint": "^8.22.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^27.0.4",
     "eslint-plugin-n": "^15.2.4",
     "eslint-plugin-promise": "^6.0.0",
+    "jest-cli": "^29.0.3",
     "nodemon": "^2.0.19"
   }
 }

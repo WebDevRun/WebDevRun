@@ -12,7 +12,7 @@ try {
     const fileParser = new FileParser(fileData)
     const parsedData = fileParser.parseFile()
     parsedFilesData.push(parsedData)
-    CsvFile.writeJson(parsedFilesData, pathResolve('result.json'))
+    CsvFile.writeJson(parsedFilesData, pathResolve('static', 'result.json'))
   }
 } catch (error) {
   console.error(error)

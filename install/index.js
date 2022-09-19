@@ -7,7 +7,10 @@ const execPromise = util.promisify(exec)
 
 try {
   await writeFile(path.resolve('database', 'gia11.db'), '')
-  const execCommand = `sqlite3 ${path.resolve('database', 'gia11.db')} < ${path.resolve('install', 'createDatabase.sql')}`
+  const execCommand = `sqlite3 ${path.resolve(
+    'database',
+    'gia11.db'
+  )} < ${path.resolve('install', 'createDatabase.sql')}`
   const { stdout, stderr } = await execPromise(execCommand)
   console.log(`stdout: ${stdout}`)
   console.error(`stderr: ${stderr}`)
