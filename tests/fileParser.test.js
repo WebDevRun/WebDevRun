@@ -1,6 +1,6 @@
-import FileParser from '../csvFilesDriver/fileParser.js'
+import FileParser from '../filesDriver/fileParser.js'
 
-describe('FileParser.parseFile', () => {
+describe('FileParser.parseCsv', () => {
   test('Should return parsed data when default exam', () => {
     const rus = `01 - Русский язык 2022.06.23;;;;;;;;;;;;;;;;;;;;;;;;;;;
       №;;Код МСУ;;Код ОО;;Класс;;Код ППЭ;;Аудитория;;Фамилия;Имя;Отчество;;Серия;;Номер;;Задания с кратким ответом;;Задания с развёрнутым ответом;;Первичный балл;;Балл;
@@ -48,7 +48,7 @@ describe('FileParser.parseFile', () => {
     }
 
     const fileParser = new FileParser(rus)
-    expect(fileParser.parseFile()).toEqual(result)
+    expect(fileParser.parseCsv()).toEqual(result)
   })
 
   test('Should return parsed data when english exam', () => {
@@ -132,7 +132,7 @@ describe('FileParser.parseFile', () => {
     }
 
     const fileParser = new FileParser(eng)
-    expect(fileParser.parseFile()).toEqual(result)
+    expect(fileParser.parseCsv()).toEqual(result)
   })
 
   test('Should return parsed data when basic math exam', () => {
@@ -203,6 +203,6 @@ describe('FileParser.parseFile', () => {
     }
 
     const fileParser = new FileParser(basicMath)
-    expect(fileParser.parseFile()).toEqual(result)
+    expect(fileParser.parseCsv()).toEqual(result)
   })
 })

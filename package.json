@@ -25,5 +25,8 @@
     "eslint-plugin-promise": "^6.0.0",
     "jest-cli": "^29.0.3",
     "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.1"
   }
 }

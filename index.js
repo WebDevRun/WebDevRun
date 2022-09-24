@@ -1,18 +1,18 @@
 import { resolve as pathResolve } from 'path'
-import CsvDirectory from './csvFilesDriver/csvDirectory.js'
-import CsvFile from './csvFilesDriver/csvFile.js'
-import FileParser from './csvFilesDriver/fileParser.js'
+import Directory from './filesDriver/directory.js'
+import File from './filesDriver/file.js'
+import FileParser from './filesDriver/fileParser.js'
 
 try {
-  const pathArray = await CsvDirectory.getCsvPaths(pathResolve('static'))
+  const pathArray = await Directory.getPaths(pathResolve('static'))
   const parsedFilesData = []
 
   for await (const path of pathArray) {
-    const fileData = await CsvFile.readFile(path)
+    const fileData = await File.read(path)
     const fileParser = new FileParser(fileData)
-    const parsedData = fileParser.parseFile()
+    const parsedData = fileParser.parseCsv()
     parsedFilesData.push(parsedData)
-    CsvFile.writeJson(parsedFilesData, pathResolve('static', 'result.json'))
+    File.writeJson(parsedFilesData, pathResolve('static', 'result.json'))
   }
 } catch (error) {
   console.error(error)

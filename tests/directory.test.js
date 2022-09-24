@@ -1,4 +1,4 @@
-import CsvDirectory from '../csvFilesDriver/csvDirectory.js'
+import Directory from '../filesDriver/directory.js'
 import path from 'path'
 import fs from 'fs/promises'
 
@@ -6,7 +6,7 @@ jest.mock('fs/promises', () => ({
   readdir: jest.fn(),
 }))
 
-describe('CsvDirectory', () => {
+describe('Directory', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
@@ -29,20 +29,20 @@ describe('CsvDirectory', () => {
       path.resolve(directory, 'test3.csv'),
     ]
     fs.readdir.mockReturnValue(files)
-    const paths = await CsvDirectory.getCsvPaths(directory)
+    const paths = await Directory.getPaths(directory)
     expect(paths).toEqual(results)
   })
 
   test('Should return error when path is not string', async () => {
     const directory = 2
-    await expect(CsvDirectory.getCsvPaths(directory)).rejects.toThrow(
+    await expect(Directory.getPaths(directory)).rejects.toThrow(
       'directory path must be string'
     )
   })
 
   test('Should return error when path is empty string', async () => {
     const directory = ''
-    await expect(CsvDirectory.getCsvPaths(directory)).rejects.toThrow(
+    await expect(Directory.getPaths(directory)).rejects.toThrow(
       'directory path must not be empty'
     )
   })
@@ -51,7 +51,7 @@ describe('CsvDirectory', () => {
     const directory = 'static'
     const files = ['test1.js', 'test2.html', 'test3', 'test4.ADS']
     fs.readdir.mockReturnValue(files)
-    const paths = await CsvDirectory.getCsvPaths(directory)
+    const paths = await Directory.getPaths(directory)
     expect(paths).toEqual([])
   })
 })
