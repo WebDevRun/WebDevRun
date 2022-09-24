@@ -1,19 +1,31 @@
-import { writeFile } from 'fs/promises'
-import util from 'util'
-import { exec } from 'child_process'
 import path from 'path'
+import sqlite3 from 'sqlite3'
+import File from '../filesDriver/file.js'
 
-const execPromise = util.promisify(exec)
+sqlite3.verbose()
 
-try {
-  await writeFile(path.resolve('database', 'gia11.db'), '')
-  const execCommand = `sqlite3 ${path.resolve(
-    'database',
-    'gia11.db'
-  )} < ${path.resolve('install', 'createDatabase.sql')}`
-  const { stdout, stderr } = await execPromise(execCommand)
-  console.log(`stdout: ${stdout}`)
-  console.error(`stderr: ${stderr}`)
-} catch (error) {
-  console.error(error)
-}
+const dbPath = path.resolve('database', 'gia11.db')
+const db = new sqlite3.Database(dbPath, (error) => {
+  if (error) return console.error(error)
+})
+const sqlPath = path.resolve('install', 'createDatabase.sql')
+const sql = await File.read(sqlPath)
+
+db.serialize(() => {
+  db.run('PRAGMA foreign_keys = ON;')
+
+  db.get('PRAGMA foreign_keys', (error, row) => {
+    if (error) return console.error(error)
+    console.log(`PRAGMA foreign_keys status ${row.foreign_keys}`)
+  })
+
+  db.exec(sql, (error) => {
+    if (error) return console.error(error)
+  })
+
+  db.close((error) => {
+    if (error) return console.error(error)
+  })
+
+  console.log(`Install database is ready. Database path: ${dbPath}`)
+})

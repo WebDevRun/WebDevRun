@@ -53,16 +53,10 @@ CREATE TABLE exam_stages (
   stage_name TEXT NOT NULL
 ) WITHOUT ROWID;
 
-CREATE TABLE exam_result_status (
-  id PRIMARY KEY,
-  status_name TEXT NOT NULL
-) WITHOUT ROWID;
-
 CREATE TABLE IF NOT EXISTS results (
   id PRIMARY KEY,
   exam_id TEXT NOT NULL,
   student_id TEXT NOT NULL,
-  exam_result_status_id TEXT NOT NULL,
   code_exam_point TEXT NOT NULL,
   auditorium_number TEXT NOT NULL,
   short_answer TEXT,
@@ -73,7 +67,6 @@ CREATE TABLE IF NOT EXISTS results (
   primary_score TEXT,
   test_score TEXT NOT NULL,
 
-  FOREIGN KEY(exam_result_status_id) REFERENCES exam_result_status(id),
   FOREIGN KEY(exam_id) REFERENCES exams(id),
   FOREIGN KEY(student_id) REFERENCES students(id)
 ) WITHOUT ROWID;
@@ -97,12 +90,6 @@ VALUES
 ('ef07995e-41c1-41a4-a496-d40d5d04576d', '11А'),
 ('a3ee63b4-7270-41d5-a1cb-ac8c21fcb4dd', '11Б'),
 ('10233ad0-d560-456c-932e-52ceb9748e5f', '11В');
-
-INSERT INTO exam_result_status (id, status_name)
-VALUES
-('43f217e9-27e8-47f7-8a97-4a1b0db04724', 'первичный'),
-('16ddf4e5-863f-44fe-a879-853f27e882a4', 'пересдача'),
-('de94874c-7982-4675-9929-b3cb32e7f624', 'апелляция');
 
 INSERT INTO exam_stages (id, stage_name)
 VALUES
