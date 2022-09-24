@@ -28,8 +28,7 @@ describe('CsvDirectory', () => {
       path.resolve(directory, 'test2.csv'),
       path.resolve(directory, 'test3.csv'),
     ]
-    const asyncFsReaddir = fs.readdir.mockResolvedValue(files)
-    await asyncFsReaddir()
+    fs.readdir.mockReturnValue(files)
     const paths = await CsvDirectory.getCsvPaths(directory)
     expect(paths).toEqual(results)
   })
@@ -51,8 +50,7 @@ describe('CsvDirectory', () => {
   test('Should return empty array when path has not csv files', async () => {
     const directory = 'static'
     const files = ['test1.js', 'test2.html', 'test3', 'test4.ADS']
-    const mockFsReaddir = fs.readdir.mockResolvedValue(files)
-    await mockFsReaddir()
+    fs.readdir.mockReturnValue(files)
     const paths = await CsvDirectory.getCsvPaths(directory)
     expect(paths).toEqual([])
   })
