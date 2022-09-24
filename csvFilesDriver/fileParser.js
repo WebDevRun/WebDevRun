@@ -27,11 +27,6 @@ export default class FileParser {
     estimation: ['оценка', 'тестовый балл'],
   }
 
-  #convertHelper = {
-    '+': 1,
-    '-': 0,
-  }
-
   constructor(data) {
     this.data = data
   }
@@ -45,17 +40,19 @@ export default class FileParser {
     return normalizeString
   }
 
+  #toLocaleDateString(title, index) {
+    return new Date(title[index]).toLocaleDateString()
+  }
+
   #parseTitle(title) {
     const splitTitle = this.#normalize(title).split(' ')
 
     if (splitTitle.includes(this.#english)) {
+      const firstDate = this.#toLocaleDateString(splitTitle, 2)
+      const secondDate = this.#toLocaleDateString(splitTitle, 3)
       const date = splitTitle[2].startsWith('п')
-        ? `п:${new Date(splitTitle[2]).toLocaleDateString()}; у:${new Date(
-            splitTitle[3]
-          ).toLocaleDateString()}`
-        : `п:${new Date(splitTitle[3]).toLocaleDateString()}; у:${new Date(
-            splitTitle[2]
-          ).toLocaleDateString()}`
+        ? `п:${firstDate}; у:${secondDate}`
+        : `п:${secondDate}; у:${firstDate}`
 
       return {
         examName: `${splitTitle[0]} ${splitTitle[1]}`,
@@ -76,13 +73,6 @@ export default class FileParser {
       .filter((item) => item !== this.#emptyString)
   }
 
-  #convertShortAnswer(shortAnswer) {
-    return shortAnswer
-      ?.split('')
-      .map((symbol) => this.#convertHelper[symbol] ?? symbol)
-      .join('')
-  }
-
   #getTableBoby(tableBody, length) {
     const tableBodyValues = []
 
@@ -98,36 +88,26 @@ export default class FileParser {
     return tableBodyValues
   }
 
-  #serialize(parsedTableHead, parsedTableBody) {
+  #deleteColumns(tableHead, tableBody) {
     const indexes = []
-    let shortAnswerIndex
-
-    const head = parsedTableHead.filter((value, index) => {
+    const head = tableHead.filter((value, index) => {
       const isPasswort = this.#requisitesComparison.passport.includes(value)
       const isNumber = this.#requisitesComparison.number.includes(value)
       if (isNumber || isPasswort) {
         indexes.push(index)
         return false
       }
-      const isShortAnswer =
-        this.#requisitesComparison.shortAnswer.includes(value)
-      if (isShortAnswer) shortAnswerIndex = index
       return true
     })
-
-    const body = parsedTableBody.map((array) => {
-      array[shortAnswerIndex] = this.#convertShortAnswer(
-        array[shortAnswerIndex]
-      )
-      return array.filter((value, index) => !indexes.includes(index))
-    })
-
+    const body = tableBody.map((array) =>
+      array.filter((value, index) => !indexes.includes(index))
+    )
     return { head, body }
   }
 
   parseFile() {
     const splitedData = this.data.includes('\r\n')
-      ? this.split('\r\n')
+      ? this.data.split('\r\n')
       : this.data.split('\n')
     const [title, tableHead, ...tableBody] = splitedData
     const parsedTitle = this.#parseTitle(title)
@@ -136,7 +116,7 @@ export default class FileParser {
       tableBody,
       parsedTableHead.length
     )
-    const { head, body } = this.#serialize(parsedTableHead, parsedTableBody)
-    return { parsedTitle, head, body }
+    const { head, body } = this.#deleteColumns(parsedTableHead, parsedTableBody)
+    return { title: parsedTitle, head, body }
   }
 }
