@@ -1,6 +1,6 @@
-import Directory from '../filesDriver/directory.js'
-import path from 'path'
-import fs from 'fs/promises'
+const Directory = require('../filesDriver/directory.js')
+const path = require('path')
+const fs = require('fs/promises')
 
 jest.mock('fs/promises', () => ({
   readdir: jest.fn(),

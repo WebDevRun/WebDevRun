@@ -1,4 +1,4 @@
-export default class FileParser {
+class FileParser {
   #splitValue = ';'
   #emptyString = ''
   #english = 'английский'
@@ -120,3 +120,5 @@ export default class FileParser {
     return { title: parsedTitle, head, body }
   }
 }
+
+module.exports = FileParser

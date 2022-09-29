@@ -1,4 +1,4 @@
-import FileParser from '../filesDriver/fileParser.js'
+const FileParser = require('../filesDriver/fileParser.js')
 
 describe('FileParser.parseCsv', () => {
   test('Should return parsed data when default exam', () => {

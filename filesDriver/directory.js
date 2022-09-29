@@ -1,7 +1,7 @@
-import { readdir } from 'fs/promises'
-import { resolve, extname, join } from 'path'
+const { readdir } = require('fs/promises')
+const { resolve, extname, join } = require('path')
 
-export default class Directory {
+class Directory {
   static #csvExtname = '.csv'
 
   static async getPaths(directoryPath, format = this.#csvExtname) {
@@ -30,3 +30,5 @@ export default class Directory {
     }
   }
 }
+
+module.exports = Directory
