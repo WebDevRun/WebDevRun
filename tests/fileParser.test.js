@@ -60,6 +60,7 @@ describe('FileParser.parseCsv', () => {
     `
     const result = {
       title: {
+        code: 'п:09; у:29',
         examName: 'английский язык',
         date: 'п:14.06.2022; у:16.06.2022',
       },

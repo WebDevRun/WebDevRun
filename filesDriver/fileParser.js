@@ -1,7 +1,10 @@
 class FileParser {
   #splitValue = ';'
   #emptyString = ''
-  #english = 'английский'
+  #english = {
+    name: 'английский',
+    code: 'п:09; у:29',
+  }
   #requisitesComparison = {
     number: ['№'],
     organigationCode: ['код оо'],
@@ -47,7 +50,7 @@ class FileParser {
   #parseTitle(title) {
     const splitTitle = this.#normalize(title).split(' ')
 
-    if (splitTitle.includes(this.#english)) {
+    if (splitTitle.includes(this.#english.name)) {
       const firstDate = this.#toLocaleDateString(splitTitle, 2)
       const secondDate = this.#toLocaleDateString(splitTitle, 3)
       const date = splitTitle[2].startsWith('п')
@@ -55,6 +58,7 @@ class FileParser {
         : `п:${secondDate}; у:${firstDate}`
 
       return {
+        code: this.#english.code,
         examName: `${splitTitle[0]} ${splitTitle[1]}`,
         date,
       }
