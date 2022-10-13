@@ -1,0 +1,8 @@
+const { resolve: pathResolve } = require('path')
+
+module.exports = {
+  config: pathResolve('databaseDriver', 'config', 'config.js'),
+  'models-path': pathResolve('databaseDriver', 'models'),
+  'migrations-path': pathResolve('databaseDriver', 'migrations'),
+  'seeders-path': pathResolve('databaseDriver', 'seeders'),
+}

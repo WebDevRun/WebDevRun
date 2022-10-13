@@ -1,36 +1,80 @@
-const { resolve: pathResolve } = require('path')
-const { Sequelize } = require('sequelize')
-const Directory = require('./filesDriver/directory.js')
-const File = require('./filesDriver/file.js')
-const FileParser = require('./filesDriver/fileParser.js')
+const readCsvFiles = require('./filesDriver/index')
+const File = require('./filesDriver/file')
+const { db, open, close } = require('./databaseDriver')
+const DBService = require('./databaseDriver/service')
 
-// const pathDb = pathResolve('database', 'gia11.db')
-// const db = new Sequelize({
-//   dialect: 'sqlite',
-//   storage: pathDb,
-// })
+const {
+  exams,
+  dates,
+  examDate,
+  schools,
+  classes,
+  schoolClass,
+  students,
+  results,
+} = db
 
-// try {
-//   const result = await db.sync()
-//   console.log(result)
-// } catch (error) {
-//   console.error(error)
-// }
 async function start() {
   try {
-    const pathArray = await Directory.getPaths(pathResolve('static'))
-    const pathJson = pathResolve('static', 'result.json')
-    const parsedFilesData = []
+    const csvData = await readCsvFiles('static')
+    // await File.writeJson('./static/result.json', csvData)
+    await open()
+    await db.sequelize.transaction(async (t) => {
+      for (const data of csvData) {
+        await DBService.insert(
+          {
+            exams,
+            dates,
+            examDate,
+            schools,
+            classes,
+            schoolClass,
+            students,
+            results,
+          },
+          data,
+          {
+            transaction: t,
+          }
+        )
+      }
+    })
 
-    for await (const path of pathArray) {
-      const fileData = await File.read(path)
-      const fileParser = new FileParser(fileData)
-      const parsedData = fileParser.parseCsv()
-      parsedFilesData.push(parsedData)
-      await File.writeJson(pathJson, parsedFilesData)
-    }
+    const findResults = await DBService.findAll(exams, {
+      where: {
+        code: '01',
+        '$examDates.students.schoolClass.school.code$': '111005',
+      },
+      include: {
+        model: examDate,
+        include: [
+          {
+            model: dates,
+          },
+          {
+            model: students,
+            include: {
+              model: schoolClass,
+              include: [
+                {
+                  model: classes,
+                },
+                {
+                  model: schools,
+                },
+              ],
+            },
+          },
+        ],
+      },
+      raw: true,
+    })
+
+    await File.writeJson('./log/result.json', findResults)
   } catch (error) {
     console.error(error)
+  } finally {
+    close()
   }
 }
 

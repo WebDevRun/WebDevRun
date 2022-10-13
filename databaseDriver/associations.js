@@ -1,0 +1,55 @@
+function setAssociations(db) {
+  db.dates.belongsToMany(db.exams, {
+    through: db.examDate,
+    foreignKey: 'date_id',
+  })
+  db.exams.belongsToMany(db.dates, {
+    through: db.examDate,
+    foreignKey: 'exam_id',
+  })
+
+  db.exams.hasMany(db.examDate, {
+    foreignKey: 'exam_id',
+  })
+
+  db.examDate.belongsTo(db.exams, {
+    foreignKey: 'exam_id',
+  })
+
+  db.examDate.belongsTo(db.dates, {
+    foreignKey: 'date_id',
+  })
+
+  db.examDate.belongsToMany(db.students, {
+    through: db.results,
+    foreignKey: 'exam_date_id',
+  })
+
+  db.schools.belongsToMany(db.classes, {
+    through: db.schoolClass,
+    foreignKey: 'school_id',
+  })
+
+  db.classes.belongsToMany(db.schools, {
+    foreignKey: 'class_id',
+    through: db.schoolClass,
+  })
+
+  db.schoolClass.belongsTo(db.classes, {
+    foreignKey: 'class_id',
+  })
+
+  db.schoolClass.belongsTo(db.schools, {
+    foreignKey: 'school_id',
+  })
+
+  db.students.belongsToMany(db.examDate, {
+    through: db.results,
+    foreignKey: 'student_id',
+  })
+  db.students.belongsTo(db.schoolClass, {
+    foreignKey: 'school_class_id',
+  })
+}
+
+module.exports = setAssociations
