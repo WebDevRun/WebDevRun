@@ -1,33 +1,10 @@
+const requisitesComparisons = require('../helpers/requisitesComparisons')
 class FileParser {
   #splitValue = ';'
   #emptyString = ''
   #english = {
     name: 'английский',
     code: 'п:09; у:29',
-  }
-  #requisitesComparison = {
-    number: ['№'],
-    organigationCode: ['код оо'],
-    class: ['класс'],
-    pointOfExamination: ['код ппэ'],
-    auditorium: ['аудитория'],
-    lastName: ['фамилия'],
-    firstName: ['имя'],
-    patronymic: ['отчество'],
-    passport: ['серия', 'номер', 'документ'],
-    shortAnswer: ['задания с кратким ответом', 'часть с кратким ответом'],
-    detailedAnswer: [
-      'задания с развёрнутым ответом',
-      'часть с развёрнутым ответом',
-    ],
-    oralScore: ['устная часть'],
-    prymaryScoreWrittenPart: [
-      'первичный балл письменной части',
-      'первичный балл письм. части',
-    ],
-    prymaryScoreOralPart: ['первичный балл устной части'],
-    prymaryScore: ['первичный балл'],
-    estimation: ['оценка', 'тестовый балл'],
   }
 
   constructor(data) {
@@ -72,41 +49,53 @@ class FileParser {
   }
 
   #getTableHead(tableHead) {
-    return this.#normalize(tableHead)
+    const deleteIndexes = []
+    const head = this.#normalize(tableHead)
       .split(this.#splitValue)
-      .filter((item) => item !== this.#emptyString)
+      .filter((item, index) => {
+        const emptyStirng = item === this.#emptyString
+        const isPasswort = requisitesComparisons.passport.includes(item)
+        const isNumber = requisitesComparisons.number.includes(item)
+        if (emptyStirng || isNumber || isPasswort) {
+          deleteIndexes.push(index)
+          return false
+        }
+        return true
+      })
+      .map((item) => {
+        for (const key in requisitesComparisons) {
+          if (requisitesComparisons[key].includes(item)) return key
+        }
+        return item
+      })
+    return { head, deleteIndexes }
   }
 
-  #getTableBoby(tableBody, length) {
+  #getTableBoby(tableBody, tableHead) {
+    const { head, deleteIndexes } = tableHead
+    const headLength = head.length
     const tableBodyValues = []
 
     for (const row of tableBody) {
       const splitRow = row
         .trim()
         .split(this.#splitValue)
-        .filter((item) => item !== this.#emptyString)
+        .filter((item, index) => {
+          if (item !== this.#emptyString && !deleteIndexes.includes(index))
+            return true
+          return false
+        })
+        .reduce((acc, item, index) => {
+          const key = head[index]
+          acc[key] = item
+          return acc
+        }, {})
 
-      if (splitRow.length === length) tableBodyValues.push(splitRow)
+      if (Object.keys(splitRow).length === headLength)
+        tableBodyValues.push(splitRow)
     }
 
     return tableBodyValues
-  }
-
-  #deleteColumns(tableHead, tableBody) {
-    const indexes = []
-    const head = tableHead.filter((value, index) => {
-      const isPasswort = this.#requisitesComparison.passport.includes(value)
-      const isNumber = this.#requisitesComparison.number.includes(value)
-      if (isNumber || isPasswort) {
-        indexes.push(index)
-        return false
-      }
-      return true
-    })
-    const body = tableBody.map((array) =>
-      array.filter((value, index) => !indexes.includes(index))
-    )
-    return { head, body }
   }
 
   parseCsv() {
@@ -115,13 +104,9 @@ class FileParser {
       : this.data.split('\n')
     const [title, tableHead, ...tableBody] = splitedData
     const parsedTitle = this.#parseTitle(title)
-    const parsedTableHead = this.#getTableHead(tableHead)
-    const parsedTableBody = this.#getTableBoby(
-      tableBody,
-      parsedTableHead.length
-    )
-    const { head, body } = this.#deleteColumns(parsedTableHead, parsedTableBody)
-    return { title: parsedTitle, head, body }
+    const parsedHead = this.#getTableHead(tableHead)
+    const parsedTableBody = this.#getTableBoby(tableBody, parsedHead)
+    return { title: parsedTitle, body: parsedTableBody }
   }
 }
 

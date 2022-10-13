@@ -1,0 +1,25 @@
+module.exports = requisitesComparison = {
+  number: ['№'],
+  local_government_code: ['код мсу'],
+  organization_code: ['код оо'],
+  class: ['класс'],
+  code_exam_point: ['код ппэ'],
+  auditorium_number: ['аудитория'],
+  last_name: ['фамилия'],
+  first_name: ['имя'],
+  patronymic: ['отчество'],
+  passport: ['серия', 'номер', 'документ'],
+  short_answer: ['задания с кратким ответом', 'часть с кратким ответом'],
+  detailed_answer: [
+    'задания с развёрнутым ответом',
+    'часть с развёрнутым ответом',
+  ],
+  oral_answer: ['устная часть'],
+  written_score: [
+    'первичный балл письменной части',
+    'первичный балл письм. части',
+  ],
+  oral_score: ['первичный балл устной части'],
+  prymary_score: ['первичный балл'],
+  estimation: ['оценка', 'тестовый балл', 'балл'],
+}
