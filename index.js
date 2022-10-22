@@ -1,80 +1,27 @@
-const readCsvFiles = require('./filesDriver/index')
 const File = require('./filesDriver/file')
-const { db, open, close } = require('./databaseDriver')
-const DBService = require('./databaseDriver/service')
-
-const {
-  exams,
-  dates,
-  examDate,
-  schools,
-  classes,
-  schoolClass,
-  students,
-  results,
-} = db
+const giaData = require('./service/giaData')
+const { open, close } = require('./databaseDriver')
 
 async function start() {
   try {
-    const csvData = await readCsvFiles('static')
-    // await File.writeJson('./static/result.json', csvData)
     await open()
-    await db.sequelize.transaction(async (t) => {
-      for (const data of csvData) {
-        await DBService.insert(
-          {
-            exams,
-            dates,
-            examDate,
-            schools,
-            classes,
-            schoolClass,
-            students,
-            results,
-          },
-          data,
-          {
-            transaction: t,
-          }
-        )
-      }
-    })
+    const result = await giaData.selectByDate('09.06.2022')
+    if (result.length) {
+      await File.writeJson('./log/result.json', result)
+      return
+    }
 
-    const findResults = await DBService.findAll(exams, {
-      where: {
-        code: '01',
-        '$examDates.students.schoolClass.school.code$': '111005',
-      },
-      include: {
-        model: examDate,
-        include: [
-          {
-            model: dates,
-          },
-          {
-            model: students,
-            include: {
-              model: schoolClass,
-              include: [
-                {
-                  model: classes,
-                },
-                {
-                  model: schools,
-                },
-              ],
-            },
-          },
-        ],
-      },
-      raw: true,
-    })
-
-    await File.writeJson('./log/result.json', findResults)
+    const examsDates = await giaData.selectExamsWithDates()
+    console.log('Такой даты нет. Может вы имели ввиду:')
+    for (const examDates of examsDates) {
+      const { dates, code, name } = examDates
+      const datesString = dates.map((item) => item.date).join(', ')
+      console.log(`${code} ${name}: [${datesString}]`)
+    }
   } catch (error) {
     console.error(error)
   } finally {
-    close()
+    await close()
   }
 }
 
