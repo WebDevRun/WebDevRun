@@ -1,8 +1,9 @@
-function setAssociations(db) {
+module.exports = function setAssociations(db) {
   db.dates.belongsToMany(db.exams, {
     through: db.examDate,
     foreignKey: 'date_id',
   })
+
   db.exams.belongsToMany(db.dates, {
     through: db.examDate,
     foreignKey: 'exam_id',
@@ -31,8 +32,8 @@ function setAssociations(db) {
   })
 
   db.classes.belongsToMany(db.schools, {
-    foreignKey: 'class_id',
     through: db.schoolClass,
+    foreignKey: 'class_id',
   })
 
   db.schoolClass.belongsTo(db.classes, {
@@ -47,9 +48,8 @@ function setAssociations(db) {
     through: db.results,
     foreignKey: 'student_id',
   })
+
   db.students.belongsTo(db.schoolClass, {
     foreignKey: 'school_class_id',
   })
 }
-
-module.exports = setAssociations
