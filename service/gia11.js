@@ -151,7 +151,7 @@ module.exports = class gia11 {
     }
   }
 
-  static async selectStudent({ lastName, firstName, patronymic }) {
+  static async selectByStudent({ lastName, firstName, patronymic }) {
     try {
       const where = {}
       if (lastName) where['last_name'] = lastName
