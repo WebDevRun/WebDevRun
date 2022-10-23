@@ -29,22 +29,6 @@ describe('File.writeJson', () => {
     expect(fs.open).toHaveBeenCalled()
   })
 
-  test('Should return error when data is not array', async () => {
-    const data = 2
-    const path = 'dir'
-    await expect(File.writeJson(path, data)).rejects.toThrow(
-      'data must be array'
-    )
-  })
-
-  test('Should return error when data is empty array', async () => {
-    const data = []
-    const path = 'dir'
-    await expect(File.writeJson(path, data)).rejects.toThrow(
-      'data must not be empty'
-    )
-  })
-
   test('Should return error when path is not string', async () => {
     const data = ['a', 'b', 'c']
     const path = 2

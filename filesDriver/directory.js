@@ -1,5 +1,5 @@
-const { readdir } = require('fs/promises')
-const { resolve, extname, join } = require('path')
+const { readdir, access, mkdir } = require('fs/promises')
+const { resolve, extname, join, dirname } = require('path')
 
 class Directory {
   static #csvExtname = '.csv'
@@ -27,6 +27,17 @@ class Directory {
       }, [])
     } catch (error) {
       return error
+    }
+  }
+
+  static async createDirIfNotExists(path) {
+    let dir
+
+    try {
+      dir = dirname(path)
+      await access(dir, constants.R_OK | constants.W_OK)
+    } catch (error) {
+      await mkdir(dir, { recursive: true })
     }
   }
 }

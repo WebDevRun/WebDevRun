@@ -5,8 +5,8 @@ const { open, close } = require('./databaseDriver')
 async function start() {
   try {
     await open()
-    const result = await gia11.selectByExam({
-      code: '06',
+    const result = await gia11.selectByDate({
+      date: '20.06.2022',
     })
     await File.writeJson(
       './log/result.json',
