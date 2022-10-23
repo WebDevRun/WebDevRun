@@ -44,6 +44,10 @@ module.exports = function setAssociations(db) {
     foreignKey: 'school_id',
   })
 
+  db.schoolClass.hasMany(db.students, {
+    foreignKey: 'school_class_id',
+  })
+
   db.students.belongsToMany(db.examDate, {
     through: db.results,
     foreignKey: 'student_id',

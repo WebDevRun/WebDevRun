@@ -287,4 +287,12 @@ module.exports = class DBService {
       return error
     }
   }
+
+  static async findOne(model, options) {
+    try {
+      return await model.findOne(options)
+    } catch (error) {
+      return error
+    }
+  }
 }
