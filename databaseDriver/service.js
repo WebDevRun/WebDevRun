@@ -1,5 +1,3 @@
-const { randomUUID } = require('crypto')
-
 module.exports = class DBService {
   static async #insertDate(model, date, options) {
     try {
@@ -9,7 +7,6 @@ module.exports = class DBService {
           date,
         },
         defaults: {
-          id: randomUUID(),
           date,
         },
         transaction,
@@ -27,7 +24,6 @@ module.exports = class DBService {
           code,
         },
         defaults: {
-          id: randomUUID(),
           code,
           name,
         },
@@ -47,7 +43,6 @@ module.exports = class DBService {
           exam_id,
         },
         defaults: {
-          id: randomUUID(),
           date_id,
           exam_id,
         },
@@ -86,7 +81,6 @@ module.exports = class DBService {
           code,
         },
         defaults: {
-          id: randomUUID(),
           code,
           short_name,
           full_name,
@@ -106,7 +100,6 @@ module.exports = class DBService {
           name,
         },
         defaults: {
-          id: randomUUID(),
           name,
         },
         transaction,
@@ -125,7 +118,6 @@ module.exports = class DBService {
           class_id,
         },
         defaults: {
-          id: randomUUID(),
           school_id,
           class_id,
         },
@@ -150,7 +142,6 @@ module.exports = class DBService {
           patronymic,
         },
         defaults: {
-          id: randomUUID(),
           last_name,
           first_name,
           patronymic,
@@ -186,7 +177,6 @@ module.exports = class DBService {
           exam_date_id,
         },
         defaults: {
-          id: randomUUID(),
           code_exam_point,
           auditorium_number,
           short_answer,
