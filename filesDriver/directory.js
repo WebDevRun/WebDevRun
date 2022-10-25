@@ -1,4 +1,4 @@
-const { readdir, access, mkdir } = require('fs/promises')
+const { readdir, access, mkdir, rm } = require('fs/promises')
 const { resolve, extname, join, dirname } = require('path')
 
 class Directory {
@@ -38,6 +38,17 @@ class Directory {
       await access(dir, constants.R_OK | constants.W_OK)
     } catch (error) {
       await mkdir(dir, { recursive: true })
+    }
+  }
+
+  static async cleanDirectory(path) {
+    try {
+      const filePaths = await this.getPaths(path)
+      for await (const path of filePaths) {
+        await rm(path)
+      }
+    } catch (error) {
+      return error
     }
   }
 }

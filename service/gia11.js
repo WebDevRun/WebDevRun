@@ -1,7 +1,7 @@
 const readCsvFiles = require('../filesDriver')
+const Directory = require('../filesDriver/directory')
 const DBService = require('../databaseDriver/service')
 const { db } = require('../databaseDriver')
-const { findOne } = require('../databaseDriver/service')
 const {
   exams,
   dates,
@@ -57,10 +57,10 @@ module.exports = class gia11 {
     }
   }
 
-  static async insert(url) {
+  static async insert(path) {
     try {
-      const csvData = await readCsvFiles(url)
-      return await db.sequelize.transaction(async (t) => {
+      const csvData = await readCsvFiles(path)
+      const insertedData = await db.sequelize.transaction(async (t) => {
         for (const data of csvData) {
           await DBService.insert(
             {
@@ -80,6 +80,8 @@ module.exports = class gia11 {
           )
         }
       })
+      await Directory.cleanDirectory(path)
+      return insertedData
     } catch (error) {
       return error
     }
