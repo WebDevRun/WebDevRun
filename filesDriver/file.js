@@ -19,16 +19,16 @@ class File {
     }
   }
 
-  static async writeJson(path, data) {
+  static async write(path, data, flags = 'w') {
     if (typeof path !== 'string') throw new Error('path must be string')
     if (path === '') throw new Error('path must not be empty')
     let fileHandle
 
     try {
       await createDirIfNotExists(path)
-      fileHandle = await open(path, 'w')
+      fileHandle = await open(path, flags)
       const stream = fileHandle.createWriteStream()
-      stream.write(JSON.stringify(data))
+      stream.write(data)
     } catch (error) {
       return error
     } finally {
