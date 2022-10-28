@@ -1,25 +1,83 @@
-module.exports = requisitesComparison = {
-  number: ['№'],
-  local_government_code: ['код мсу'],
-  organization_code: ['код оо'],
-  class: ['класс'],
-  code_exam_point: ['код ппэ'],
-  auditorium_number: ['аудитория'],
-  last_name: ['фамилия'],
-  first_name: ['имя'],
-  patronymic: ['отчество'],
-  passport: ['серия', 'номер', 'документ'],
-  short_answer: ['задания с кратким ответом', 'часть с кратким ответом'],
-  detailed_answer: [
-    'задания с развёрнутым ответом',
-    'часть с развёрнутым ответом',
-  ],
-  oral_answer: ['устная часть'],
-  written_score: [
-    'первичный балл письменной части',
-    'первичный балл письм. части',
-  ],
-  oral_score: ['первичный балл устной части'],
-  prymary_score: ['первичный балл'],
-  estimation: ['оценка', 'тестовый балл', 'балл'],
-}
+module.exports = requisitesComparison = [
+  {
+    name: 'number',
+    values: ['№'],
+    exclude: true,
+  },
+  {
+    name: 'local_government_code',
+    values: ['код мсу'],
+  },
+  {
+    name: 'organization_code',
+    values: ['код оо'],
+    allowNull: false,
+  },
+  {
+    name: 'class',
+    values: ['класс'],
+    allowNull: false,
+    unique: true,
+  },
+  {
+    name: 'code_exam_point',
+    values: ['код ппэ'],
+    allowNull: false,
+  },
+  {
+    name: 'auditorium_number',
+    values: ['аудитория'],
+    allowNull: false,
+  },
+  {
+    name: 'last_name',
+    values: ['фамилия'],
+    allowNull: false,
+  },
+  {
+    name: 'first_name',
+    values: ['имя'],
+    allowNull: false,
+  },
+  {
+    name: 'patronymic',
+    values: ['отчество'],
+  },
+  {
+    name: 'passport',
+    values: ['серия', 'номер', 'документ'],
+    exclude: true,
+  },
+  {
+    name: 'short_answer',
+    values: ['задания с кратким ответом', 'часть с кратким ответом'],
+  },
+  {
+    name: 'detailed_answer',
+    values: ['задания с развёрнутым ответом', 'часть с развёрнутым ответом'],
+  },
+  { name: 'oral_answer', values: ['устная часть'] },
+  {
+    name: 'written_score',
+    values: ['первичный балл письменной части', 'первичный балл письм. части'],
+  },
+  { name: 'oral_score', values: ['первичный балл устной части'] },
+  { name: 'prymary_score', values: ['первичный балл'] },
+  {
+    name: 'estimation',
+    values: ['оценка', 'тестовый балл', 'балл'],
+    allowNull: false,
+  },
+  {
+    name: 'appeal_type',
+    values: ['тип апелляции / перепроверки'],
+  },
+  { name: 'appeal_status', values: ['состояние'] },
+  { name: 'send_for_processing_date', values: ['дата отправки на обработку'] },
+  { name: 'change_date', values: ['дата изменений'] },
+  {
+    name: 'current',
+    values: ['текущие'],
+    composite: ['prymary_score', 'estimation'],
+  },
+]
