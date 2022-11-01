@@ -1,19 +1,27 @@
 const File = require('./filesDriver/file')
 const gia11 = require('./service/gia11')
-const { open, close } = require('./databaseDriver')
+const { db, open, close } = require('./databaseDriver')
 
 async function start() {
   try {
     await open()
-    const result = await gia11.selectByDate({
-      date: '20.06.2022',
-    })
-    await File.writeJson(
+    const results = await gia11.insert('static')
+    if (results instanceof Error) throw results
+    await File.write(
       './log/result.json',
-      Array.isArray(result) ? result : [result]
+      Array.isArray(results)
+        ? JSON.stringify(results)
+        : JSON.stringify([results])
     )
   } catch (error) {
     console.error(error)
+    const date = new Date()
+
+    await File.write(
+      './log/errors.log',
+      `Date: ${date}\n${error.stack}\n\n`,
+      'a'
+    )
   } finally {
     await close()
   }

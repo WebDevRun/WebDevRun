@@ -11,6 +11,7 @@ const {
   schoolClass,
   students,
   results,
+  appeals,
 } = db
 
 module.exports = class gia11 {
@@ -60,9 +61,12 @@ module.exports = class gia11 {
   static async insert(path) {
     try {
       const csvData = await readCsvFiles(path)
-      const insertedData = await db.sequelize.transaction(async (t) => {
-        for (const data of csvData) {
-          await DBService.insert(
+      const appealsData = csvData.filter((data) => data.isRecheking)
+      const resultsData = csvData.filter((data) => !data.isRecheking)
+      const insertedResults = await db.sequelize.transaction(async (t) => {
+        const insertedResults = []
+        for (const resultsChunk of resultsData) {
+          const insertedResult = await DBService.insertResults(
             {
               exams,
               dates,
@@ -73,15 +77,38 @@ module.exports = class gia11 {
               students,
               results,
             },
-            data,
+            resultsChunk,
             {
               transaction: t,
             }
           )
+          insertedResults.push(insertedResult)
         }
+        return insertedResults
       })
-      await Directory.cleanDirectory(path)
-      return insertedData
+      const insertedAppeals = await db.sequelize.transaction(async (t) => {
+        const insertedAppeals = []
+        for (const appealsChunk of appealsData) {
+          const insertedAppeal = await DBService.insertAppeals(
+            {
+              exams,
+              dates,
+              examDate,
+              students,
+              results,
+              appeals,
+            },
+            appealsChunk,
+            {
+              transaction: t,
+            }
+          )
+          insertedAppeals.push(insertedAppeal)
+        }
+        return insertedAppeals
+      })
+
+      return [...insertedResults, ...insertedAppeals]
     } catch (error) {
       return error
     }

@@ -16,8 +16,6 @@ const sequelize = new Sequelize(
 )
 
 const db = {}
-db.sequelize = sequelize
-db.Sequelize = Sequelize
 
 async function open() {
   await db.sequelize.authenticate()
@@ -36,5 +34,8 @@ fs.readdirSync(modelsPath)
   })
 
 setAssociations(db)
+
+db.sequelize = sequelize
+db.Sequelize = Sequelize
 
 module.exports = { db, open, close }

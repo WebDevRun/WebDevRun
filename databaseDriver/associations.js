@@ -56,4 +56,20 @@ module.exports = function setAssociations(db) {
   db.students.belongsTo(db.schoolClass, {
     foreignKey: 'school_class_id',
   })
+
+  db.results.belongsTo(db.students, {
+    foreignKey: 'student_id',
+  })
+
+  db.results.belongsTo(db.examDate, {
+    foreignKey: 'exam_date_id',
+  })
+
+  db.results.hasOne(db.appeals, {
+    foreignKey: 'result_id',
+  })
+
+  db.appeals.belongsTo(db.results, {
+    foreignKey: 'result_id',
+  })
 }

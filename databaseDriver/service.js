@@ -1,3 +1,4 @@
+const File = require('../filesDriver/file')
 module.exports = class DBService {
   static async #insertDate(model, date, options) {
     try {
@@ -196,7 +197,7 @@ module.exports = class DBService {
     }
   }
 
-  static async insert(models, data, options) {
+  static async insertResults(models, resultsChunk, options) {
     const insertedResults = []
 
     try {
@@ -210,8 +211,7 @@ module.exports = class DBService {
         students,
         results,
       } = models
-      const { title, body } = data
-
+      const { title, body } = resultsChunk
       const [insertedTitle] = await this.insertTitle(
         { exams, dates, examDate },
         title,
@@ -266,6 +266,91 @@ module.exports = class DBService {
 
       return insertedResults
     } catch (error) {
+      return error
+    }
+  }
+
+  static async #insertAppeal(model, result, options) {
+    try {
+      const {
+        appeal_type,
+        appeal_status,
+        send_for_processing_date,
+        change_date,
+        prymary_score,
+        estimation,
+        result_id,
+      } = result
+      const { transaction } = options
+
+      return await model.findOrCreate({
+        where: {
+          appeal_type,
+          change_date,
+          prymary_score,
+          estimation,
+          result_id,
+        },
+        defaults: {
+          appeal_type,
+          appeal_status,
+          send_for_processing_date,
+          change_date,
+          prymary_score,
+          estimation,
+          result_id,
+        },
+        transaction,
+      })
+    } catch (error) {
+      return error
+    }
+  }
+
+  static async insertAppeals(models, appealsChunk, options) {
+    const insertedAppeals = []
+
+    try {
+      const { exams, dates, examDate, students, results, appeals } = models
+      const { title, body } = appealsChunk
+
+      for (const row of body) {
+        const findResult = await results.findOne({
+          where: {
+            '$examDate.date.date$': title.date,
+            '$examDate.exam.code$': title.code,
+            '$student.last_name$': row.last_name,
+            '$student.first_name$': row.first_name,
+            '$student.patronymic$': row.patronymic,
+          },
+          include: [
+            students,
+            {
+              model: examDate,
+              include: [dates, exams],
+            },
+          ],
+          transaction: options.transaction,
+        })
+        const insertedAppeal = await this.#insertAppeal(
+          appeals,
+          {
+            appeal_type: row.appeal_type,
+            appeal_status: row.appeal_status,
+            send_for_processing_date: row.send_for_processing_date,
+            change_date: row.change_date,
+            prymary_score: row.prymary_score,
+            estimation: row.estimation,
+            result_id: findResult.id,
+          },
+          options
+        )
+        insertedAppeals.push(insertedAppeal)
+      }
+
+      return insertedAppeals
+    } catch (error) {
+      console.error({ error })
       return error
     }
   }
