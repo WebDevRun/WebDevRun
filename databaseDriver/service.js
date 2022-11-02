@@ -1,4 +1,3 @@
-const File = require('../filesDriver/file')
 module.exports = class DBService {
   static async #insertDate(model, date, options) {
     try {

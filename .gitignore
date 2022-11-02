@@ -3,3 +3,4 @@ database
 static
 .vscode
 log
+.env

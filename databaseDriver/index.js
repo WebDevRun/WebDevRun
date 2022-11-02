@@ -3,6 +3,7 @@ const path = require('path')
 const process = require('process')
 const Sequelize = require('sequelize')
 const setAssociations = require('./associations')
+const DBService = require('./service')
 
 const modelsPath = path.resolve('databaseDriver', 'models')
 const configPath = path.resolve('databaseDriver', 'config', 'config.js')
@@ -38,4 +39,4 @@ setAssociations(db)
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
-module.exports = { db, open, close }
+module.exports = { db, open, close, DBService }

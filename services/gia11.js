@@ -1,6 +1,7 @@
 const readCsvFiles = require('../filesDriver')
-const DBService = require('../databaseDriver/service')
-const { db } = require('../databaseDriver')
+const { db, DBService } = require('../databaseDriver')
+const Directory = require('../filesDriver/directory')
+
 const {
   exams,
   dates,
@@ -10,7 +11,6 @@ const {
   schoolClass,
   students,
   results,
-  appeals,
 } = db
 
 module.exports = class gia11 {
@@ -106,6 +106,7 @@ module.exports = class gia11 {
         return insertedAppeals
       })
 
+      await Directory.cleanDirectory(path)
       return [...insertedResults, ...insertedAppeals]
     } catch (error) {
       return error

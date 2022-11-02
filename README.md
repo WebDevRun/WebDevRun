@@ -4,10 +4,10 @@ GIA11 backend is a project which save information about gia11 results
 
 ## Install
 
-You can install using this command:
+You can create database and create tables using this command:
 
 ```shell
-npm run install
+npm run migrate:up
 ```
 
 ## Usage

@@ -8,7 +8,6 @@
     "dev": "nodemon index.js",
     "test": "npx jest ./tests",
     "test:watch": "npx jest --watchAll ./tests",
-    "install": "node install/index.js",
     "migrate:up": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
     "migrate:undo": "npx sequelize-cli db:seed:undo:all && npx sequelize-cli db:migrate:undo"
   },
