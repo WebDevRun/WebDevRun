@@ -1,5 +1,4 @@
 const readCsvFiles = require('../filesDriver')
-const Directory = require('../filesDriver/directory')
 const DBService = require('../databaseDriver/service')
 const { db } = require('../databaseDriver')
 const {
@@ -96,7 +95,6 @@ module.exports = class gia11 {
               examDate,
               students,
               results,
-              appeals,
             },
             appealsChunk,
             {

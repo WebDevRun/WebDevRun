@@ -277,31 +277,27 @@ module.exports = class DBService {
         appeal_status,
         send_for_processing_date,
         change_date,
-        prymary_score,
-        estimation,
-        result_id,
+        appeal_prymary_score,
+        appeal_estimation,
+        id,
       } = result
-      const { transaction } = options
 
-      return await model.findOrCreate({
-        where: {
-          appeal_type,
-          change_date,
-          prymary_score,
-          estimation,
-          result_id,
-        },
-        defaults: {
+      return await model.update(
+        {
           appeal_type,
           appeal_status,
           send_for_processing_date,
           change_date,
-          prymary_score,
-          estimation,
-          result_id,
+          appeal_prymary_score,
+          appeal_estimation,
         },
-        transaction,
-      })
+        {
+          where: {
+            id,
+          },
+        },
+        options
+      )
     } catch (error) {
       return error
     }
@@ -311,7 +307,7 @@ module.exports = class DBService {
     const insertedAppeals = []
 
     try {
-      const { exams, dates, examDate, students, results, appeals } = models
+      const { exams, dates, examDate, students, results } = models
       const { title, body } = appealsChunk
 
       for (const row of body) {
@@ -330,18 +326,23 @@ module.exports = class DBService {
               include: [dates, exams],
             },
           ],
-          transaction: options.transaction,
         })
+
+        if (findResult === null)
+          throw new Error(
+            `not find result appropriate this appeal. date: ${title.date}; exam_code: ${title.code}; full_name: ${row.last_name} ${row.first_name} ${row.patronymic}`
+          )
+
         const insertedAppeal = await this.#insertAppeal(
-          appeals,
+          results,
           {
             appeal_type: row.appeal_type,
             appeal_status: row.appeal_status,
             send_for_processing_date: row.send_for_processing_date,
             change_date: row.change_date,
-            prymary_score: row.prymary_score,
-            estimation: row.estimation,
-            result_id: findResult.id,
+            appeal_prymary_score: row.prymary_score,
+            appeal_estimation: row.estimation,
+            id: findResult.id,
           },
           options
         )
@@ -350,7 +351,6 @@ module.exports = class DBService {
 
       return insertedAppeals
     } catch (error) {
-      console.error({ error })
       return error
     }
   }

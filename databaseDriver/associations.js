@@ -64,12 +64,4 @@ module.exports = function setAssociations(db) {
   db.results.belongsTo(db.examDate, {
     foreignKey: 'exam_date_id',
   })
-
-  db.results.hasOne(db.appeals, {
-    foreignKey: 'result_id',
-  })
-
-  db.appeals.belongsTo(db.results, {
-    foreignKey: 'result_id',
-  })
 }

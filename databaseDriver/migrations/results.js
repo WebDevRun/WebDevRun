@@ -37,6 +37,24 @@ module.exports = {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
+      appeal_type: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      appeal_status: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      send_for_processing_date: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      change_date: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      appeal_prymary_score: {
+        type: Sequelize.DataTypes.STRING,
+      },
+      appeal_estimation: {
+        type: Sequelize.DataTypes.STRING,
+      },
       exam_date_id: {
         type: Sequelize.DataTypes.UUIDV4,
         references: {
