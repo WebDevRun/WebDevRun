@@ -1,8 +1,6 @@
 const readCsvFiles = require('../filesDriver')
 const { db, DBService } = require('../databaseDriver')
 const Directory = require('../filesDriver/directory')
-const { find } = require('../helpers/requisitesComparisons')
-const { findAll } = require('../databaseDriver/service')
 
 const {
   exams,
@@ -181,14 +179,14 @@ module.exports = class GIA11Service {
     }
   }
 
-  static async selectByStudent({ lastName, firstName, patronymic }) {
+  static async selectByStudent({ lastname, firstname, patronymic }) {
     try {
       const where = {}
-      if (lastName) where['last_name'] = lastName
-      if (firstName) where['short_name'] = firstName
-      if (patronymic) where['short_name'] = patronymic
+      if (lastname) where['last_name'] = lastname
+      if (firstname) where['first_name'] = firstname
+      if (patronymic) where['patronymic'] = patronymic
 
-      return await DBService.findOne(students, {
+      return await DBService.findAll(students, {
         where,
         attributes: { exclude: ['school_class_id'] },
         include: [

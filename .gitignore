@@ -4,3 +4,4 @@ static
 .vscode
 log
 .env
+restClient.http
