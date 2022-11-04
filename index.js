@@ -1,19 +1,19 @@
+const http = require('http')
+require('dotenv').config()
 const File = require('./filesDriver/file')
-const gia11 = require('./services/gia11')
+const GIA11Controller = require('./controllers/GIA11.controller')
 const { open, close } = require('./databaseDriver')
 
 async function start() {
   try {
+    const port = process.env.PORT || 3000
     await open()
-    const results = await gia11.insert('static')
-    // const results = await gia11.selectByDate({ date: '06.06.2022' })
-    if (results instanceof Error) throw results
-    await File.write(
-      './log/result.json',
-      Array.isArray(results)
-        ? JSON.stringify(results)
-        : JSON.stringify([results])
-    )
+    const server = http.createServer(async (req, res) => {
+      const results = await GIA11Controller.router(req, res, port)
+      if (results instanceof Error) throw results
+    })
+
+    server.listen(port, () => console.log(`server started on port ${port} `))
   } catch (error) {
     console.error(error)
     const date = new Date()
@@ -23,7 +23,6 @@ async function start() {
       `Date: ${date}\n${error.stack}\n\n`,
       'a'
     )
-  } finally {
     await close()
   }
 }

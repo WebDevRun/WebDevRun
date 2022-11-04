@@ -27,6 +27,7 @@
     "sequelize-cli": "^6.5.1"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
     "sequelize": "^6.23.2",
     "sqlite3": "^5.1.1"
   }

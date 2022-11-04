@@ -1,6 +1,8 @@
 const readCsvFiles = require('../filesDriver')
 const { db, DBService } = require('../databaseDriver')
 const Directory = require('../filesDriver/directory')
+const { find } = require('../helpers/requisitesComparisons')
+const { findAll } = require('../databaseDriver/service')
 
 const {
   exams,
@@ -13,7 +15,7 @@ const {
   results,
 } = db
 
-module.exports = class gia11 {
+module.exports = class GIA11Service {
   static #configForSelectExamDate = {
     attributes: [],
     include: [
@@ -204,6 +206,16 @@ module.exports = class gia11 {
             include: [dates, exams],
           },
         ],
+      })
+    } catch (error) {
+      return error
+    }
+  }
+
+  static async selectSchools() {
+    try {
+      return await schools.findAll({
+        attributes: ['code', 'short_name'],
       })
     } catch (error) {
       return error
