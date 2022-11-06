@@ -73,5 +73,15 @@ module.exports = (sequelize, DataTypes) => {
     }
   )
 
+  Results.associate = (models) => {
+    Results.belongsTo(models.students, {
+      foreignKey: 'student_id',
+    })
+
+    Results.belongsTo(models.examDate, {
+      foreignKey: 'exam_date_id',
+    })
+  }
+
   return Results
 }

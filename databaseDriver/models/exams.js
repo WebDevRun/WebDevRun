@@ -28,5 +28,16 @@ module.exports = (sequelize, DataTypes) => {
     }
   )
 
+  Exams.associate = (models) => {
+    Exams.belongsToMany(models.dates, {
+      through: models.examDate,
+      foreignKey: 'exam_id',
+    })
+
+    Exams.hasMany(models.examDate, {
+      foreignKey: 'exam_id',
+    })
+  }
+
   return Exams
 }

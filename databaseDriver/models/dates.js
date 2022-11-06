@@ -24,5 +24,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   )
 
+  Dates.associate = (models) => {
+    Dates.belongsToMany(models.exams, {
+      through: models.examDate,
+      foreignKey: 'date_id',
+    })
+  }
   return Dates
 }

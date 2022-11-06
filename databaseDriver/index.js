@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const process = require('process')
 const Sequelize = require('sequelize')
-const setAssociations = require('./associations')
 const DBService = require('./service')
 
 const modelsPath = path.resolve('databaseDriver', 'models')
@@ -34,7 +33,11 @@ fs.readdirSync(modelsPath)
     db[model.name] = model
   })
 
-setAssociations(db)
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db)
+  }
+})
 
 db.sequelize = sequelize
 db.Sequelize = Sequelize
