@@ -1,4 +1,4 @@
-const { readdir, access, mkdir, rm } = require('fs/promises')
+const { readdir, access, mkdir, rm, stat } = require('fs/promises')
 const { resolve, extname, join, dirname } = require('path')
 
 class Directory {
@@ -34,7 +34,7 @@ class Directory {
     let dir
 
     try {
-      dir = dirname(path)
+      dir = path
       await access(dir, constants.R_OK | constants.W_OK)
     } catch (error) {
       await mkdir(dir, { recursive: true })
