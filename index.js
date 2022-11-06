@@ -10,7 +10,7 @@ const app = express()
 async function start() {
   try {
     await open()
-    app.use(express.json())
+    app.use(express.urlencoded({ extended: true }))
     app.use('/api', GIA11Router)
     app.listen(port, () => console.log(`server started on port ${port} `))
   } catch (error) {
