@@ -1,6 +1,5 @@
 const readCsvFiles = require('../filesDriver')
 const { db, DBService } = require('../databaseDriver')
-const Directory = require('../filesDriver/directory')
 
 const {
   exams,
@@ -106,7 +105,6 @@ module.exports = class GIA11Service {
         return insertedAppeals
       })
 
-      await Directory.cleanDirectory(path)
       return [...insertedResults, ...insertedAppeals]
     } catch (error) {
       return error
@@ -218,5 +216,62 @@ module.exports = class GIA11Service {
     } catch (error) {
       return error
     }
+  }
+
+  static async updateSchool({ id, code, short_name, full_name }) {
+    return await schools.update(
+      {
+        code,
+        short_name,
+        full_name,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    )
+  }
+
+  static async updateExam({ id, code, name }) {
+    return await exams.update(
+      {
+        code,
+        name,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    )
+  }
+
+  static async updateDate({ id, date }) {
+    return await dates.update(
+      {
+        date,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    )
+  }
+
+  static async updateStudent({ id, last_name, first_name, patronymic }) {
+    return await students.update(
+      {
+        last_name,
+        first_name,
+        patronymic,
+      },
+      {
+        where: {
+          id,
+        },
+      }
+    )
   }
 }
